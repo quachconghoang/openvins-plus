@@ -92,6 +92,8 @@ target_include_directories(ov_core_lib PUBLIC src)
 if (catkin_FOUND)
     add_executable(test_tracking src/test_tracking.cpp)
     target_link_libraries(test_tracking ov_core_lib ${thirdparty_libraries})
+    add_executable(test_tracking_viode src/test_tracking_viode.cpp)
+    target_link_libraries(test_tracking_viode ov_core_lib ${thirdparty_libraries})
 endif()
 
 

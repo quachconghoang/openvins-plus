@@ -64,7 +64,7 @@ void handle_stereo(double time0, double time1, cv::Mat img0, cv::Mat img1, bool 
 // Main function
 int main(int argc, char** argv)
 {
-    ros::init(argc, argv, "test_tracking");
+    ros::init(argc, argv, "test_tracking_viode");
     ros::NodeHandle nh("~");
 
     // Our camera topics (left and right stereo)
@@ -75,7 +75,7 @@ int main(int argc, char** argv)
 
     // Location of the ROS bag we want to read in
     std::string path_to_bag;
-    nh.param<std::string>("path_bag", path_to_bag, "/home/hoangqc/Datasets/EuroC/MH_04_difficult.bag");
+    nh.param<std::string>("path_bag", path_to_bag, "/home/hoangqc/Datasets/VIODE/city_day/1_low.bag");
     //nh.param<std::string>("path_bag", path_to_bag, "/home/patrick/datasets/eth/V2_03_difficult.bag");
     printf("ros bag path is: %s\n", path_to_bag.c_str());
 
@@ -104,7 +104,7 @@ int main(int argc, char** argv)
     nh.param<int>("min_px_dist", min_px_dist, 3);
     nh.param<double>("knn_ratio", knn_ratio, 0.85);
     nh.param<bool>("downsize_aruco", do_downsizing, false);
-    nh.param<bool>("use_stereo", use_stereo, false);
+    nh.param<bool>("use_stereo", use_stereo, true);
 
     // Debug print!
     printf("max features: %d\n", num_pts);
