@@ -82,10 +82,10 @@
         <param name="up_slam_chi2_multipler"       type="double"   value="1" />
         <param name="up_aruco_sigma_px"            type="double"   value="1" />
         <param name="up_aruco_chi2_multipler"      type="double"   value="1" />
-        <param name="gyroscope_noise_density"      type="double"   value="0.05" />
-        <param name="gyroscope_random_walk"        type="double"   value="4.0e-5" />
-        <param name="accelerometer_noise_density"  type="double"   value="0.2" />
-        <param name="accelerometer_random_walk"    type="double"   value="0.02" />
+        <param name="gyroscope_noise_density"      type="double"   value="8.73e-5 " />
+        <param name="gyroscope_random_walk"        type="double"   value="9.97e-7" />
+        <param name="accelerometer_noise_density"  type="double"   value="2.35e-3" />
+        <param name="accelerometer_random_walk"    type="double"   value="1.25e-5" />
 
         <!-- camera intrinsics -->
         <rosparam param="cam0_wh">[752, 480]</rosparam>

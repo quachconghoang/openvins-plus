@@ -75,7 +75,7 @@ int main(int argc, char** argv)
 
     // Location of the ROS bag we want to read in
     std::string path_to_bag;
-    nh.param<std::string>("path_bag", path_to_bag, "/home/hoangqc/Datasets/EuroC/MH_04_difficult.bag");
+    nh.param<std::string>("path_bag", path_to_bag, "/home/hoangqc/Datasets/EuroC/V1_03_difficult.bag");
     //nh.param<std::string>("path_bag", path_to_bag, "/home/patrick/datasets/eth/V2_03_difficult.bag");
     printf("ros bag path is: %s\n", path_to_bag.c_str());
 
