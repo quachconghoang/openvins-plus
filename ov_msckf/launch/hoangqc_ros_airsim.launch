@@ -4,7 +4,7 @@
     <arg name="max_cameras" default="2" />
     <arg name="use_stereo"  default="true" />
     <arg name="bag_start"   default="0" /> <!-- v1-2: 0, mh1: 40, mh2: 35, mh3: 17.5, mh4-5: 15 -->
-    <arg name="bag"         default="/home/hoangqc/Datasets/Airsim-ros/NH-base.bag" />
+    <arg name="bag"         default="/home/hoangqc/Datasets/Airsim-ros/NH-base-10ms.bag" />
 
     <!-- imu starting thresholds -->
     <arg name="init_window_time"  default="0.75" />
@@ -32,9 +32,9 @@
         <param name="use_imuavg"             type="bool"   value="true" />
         <param name="use_rk4int"             type="bool"   value="true" />
         <param name="use_stereo"             type="bool"   value="true" />
-        <param name="calib_cam_extrinsics"   type="bool"   value="true" />
-        <param name="calib_cam_intrinsics"   type="bool"   value="true" />
-        <param name="calib_cam_timeoffset"   type="bool"   value="true" />
+        <param name="calib_cam_extrinsics"   type="bool"   value="false" />
+        <param name="calib_cam_intrinsics"   type="bool"   value="false" />
+        <param name="calib_cam_timeoffset"   type="bool"   value="false" />
         <param name="calib_camimu_dt"        type="double" value="0.0" />
         <param name="max_clones"             type="int"    value="11" />
         <param name="max_slam"               type="int"    value="75" />
@@ -92,9 +92,9 @@
         <rosparam param="cam1_wh">[640, 400]</rosparam>
         <param name="cam0_is_fisheye" type="bool" value="false" />
         <param name="cam1_is_fisheye" type="bool" value="false" />
-        <rosparam param="cam0_k">[140.2788, 140.2788, 320.0, 200.0]</rosparam>
+        <rosparam param="cam0_k">[170.147, 170.147, 320.0, 200.0]</rosparam>
         <rosparam param="cam0_d">[0.0, 0.0, 0.0, 0.0]</rosparam>
-        <rosparam param="cam1_k">[140.2788, 140.2788, 320.0, 200.0]</rosparam>
+        <rosparam param="cam1_k">[170.147, 170.147, 320.0, 200.0]</rosparam>
         <rosparam param="cam1_d">[0.0, 0.0, 0.0, 0.0]</rosparam>
 
         <!-- camera extrinsics -->
