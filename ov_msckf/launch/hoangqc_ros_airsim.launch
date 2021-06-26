@@ -4,7 +4,7 @@
     <arg name="max_cameras" default="2" />
     <arg name="use_stereo"  default="true" />
     <arg name="bag_start"   default="0" /> <!-- v1-2: 0, mh1: 40, mh2: 35, mh3: 17.5, mh4-5: 15 -->
-    <arg name="bag"         default="/home/hoangqc/Datasets/Airsim-ros/NH-base-10ms.bag" />
+    <arg name="bag"         default="/home/hoangqc/Datasets/Airsim-ros/NH-base-5ms.bag" />
 
     <!-- imu starting thresholds -->
     <arg name="init_window_time"  default="0.75" />
@@ -66,7 +66,7 @@
         <param name="grid_x"             type="int"    value="9" />
         <param name="grid_y"             type="int"    value="7" />
         <param name="min_px_dist"        type="int"    value="5" />
-        <param name="knn_ratio"          type="double" value="0.70" />
+        <param name="knn_ratio"          type="double" value="0.65" />
         <param name="downsample_cameras" type="bool"   value="false" />
         <param name="multi_threading"    type="bool"   value="true" />
 
@@ -82,7 +82,11 @@
         <param name="up_slam_chi2_multipler"       type="double"   value="1" />
         <param name="up_aruco_sigma_px"            type="double"   value="1" />
         <param name="up_aruco_chi2_multipler"      type="double"   value="1" />
-        <param name="gyroscope_noise_density"      type="double"   value="8.73e-5 " />
+<!--        <param name="gyroscope_noise_density"      type="double"   value="0" />-->
+<!--        <param name="gyroscope_random_walk"        type="double"   value="0" />-->
+<!--        <param name="accelerometer_noise_density"  type="double"   value="0" />-->
+<!--        <param name="accelerometer_random_walk"    type="double"   value="0" />-->
+        <param name="gyroscope_noise_density"      type="double"   value="8.73e-5" />
         <param name="gyroscope_random_walk"        type="double"   value="9.97e-7" />
         <param name="accelerometer_noise_density"  type="double"   value="2.35e-3" />
         <param name="accelerometer_random_walk"    type="double"   value="1.25e-5" />

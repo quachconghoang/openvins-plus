@@ -2,7 +2,7 @@
 
 
     <!-- what ros bag to play -->
-    <arg name="bag_name"    default="NH-base-10ms" />
+    <arg name="bag_name"    default="NH-base-5ms" />
     <arg name="bag_path"    default="/home/hoangqc/Datasets/Airsim-ros" />
 
 
