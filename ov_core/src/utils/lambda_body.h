@@ -20,32 +20,28 @@
  */
 
 
-#ifndef OV_MSCKF_UPDATER_OPTIONS_H
-#define OV_MSCKF_UPDATER_OPTIONS_H
+#ifndef LAMBDA_BODY_H
+#define LAMBDA_BODY_H
 
-namespace ov_msckf {
+#include <functional>
+#include <opencv2/opencv.hpp>
+
+namespace ov_core {
 
 /**
- * @brief Struct which stores general updater options
+ * This is a utility class required to build with older version of opencv
+ * On newer versions this doesn't seem to be needed, but here we just use it to ensure we can work for more opencv version.
+ * https://answers.opencv.org/question/65800/how-to-use-lambda-as-a-parameter-to-parallel_for_/?answer=130691#post-id-130691
  */
-struct UpdaterOptions {
+class LambdaBody : public cv::ParallelLoopBody {
+public:
+  explicit LambdaBody(const std::function<void(const cv::Range &)> &body) { _body = body; }
+  void operator()(const cv::Range &range) const override { _body(range); }
 
-  /// What chi-squared multipler we should apply
-  double chi2_multipler = 5;
-
-  /// Noise sigma for our raw pixel measurements
-  double sigma_pix = 1;
-
-  /// Covariance for our raw pixel measurements
-  double sigma_pix_sq = 1;
-
-  /// Nice print function of what parameters we have loaded
-  void print() {
-    printf("\t- chi2_multipler: %.1f\n", chi2_multipler);
-    printf("\t- sigma_pix: %.2f\n", sigma_pix);
-  }
+private:
+  std::function<void(const cv::Range &)> _body;
 };
 
-} // namespace ov_msckf
+} /* namespace ov_core */
 
-#endif // OV_MSCKF_UPDATER_OPTIONS_H
+#endif /* LAMBDA_BODY_H */
