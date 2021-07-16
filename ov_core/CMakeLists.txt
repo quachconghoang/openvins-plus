@@ -9,6 +9,11 @@ find_package(catkin QUIET COMPONENTS roscpp rosbag tf std_msgs geometry_msgs sen
 # Include libraries (if we don't have opencv 4, then fallback to opencv 3)
 find_package(Eigen3 REQUIRED)
 find_package(OpenCV 4 QUIET)
+
+set(CMAKE_PREFIX_PATH "~/local")
+find_package(Torch REQUIRED)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TORCH_CXX_FLAGS}")
+
 if (NOT OpenCV_FOUND)
     find_package(OpenCV 3 REQUIRED)
 endif()
@@ -92,6 +97,8 @@ target_include_directories(ov_core_lib PUBLIC src)
 if (catkin_FOUND)
     add_executable(test_tracking src/test_tracking.cpp)
     target_link_libraries(test_tracking ov_core_lib ${thirdparty_libraries})
+    add_executable(test_tracking_viode src/test_tracking_viode.cpp)
+    target_link_libraries(test_tracking_viode ov_core_lib ${thirdparty_libraries})
 endif()
 
 

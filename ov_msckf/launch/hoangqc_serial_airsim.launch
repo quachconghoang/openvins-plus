@@ -21,8 +21,8 @@
         <rosparam param="stereo_pairs">[0, 1]</rosparam>
 
         <!-- bag parameters -->
-        <param name="path_bag"    type="string" value="/home/hoangqc/Datasets/Airsim-ros/NH-base-5ms.bag" />
-<!--        <param name="path_gt"     type="string" value="/home/hoangqc/Datasets/Airsim-ros/1-gt/NH-base-5ms.csv" />-->
+        <param name="path_bag"    type="string" value="/home/hoangqc/Datasets/Airsim-ros/NH-base-20fps.bag" />
+        <param name="path_gt"     type="string" value="/home/hoangqc/Datasets/Airsim-ros/1-gt/NH-base-20fps.csv" />
         <param name="bag_start"   type="int"    value="0" />
         <param name="bag_durr"    type="int"    value="-1" />
 

@@ -4,7 +4,7 @@
     <arg name="max_cameras" default="2" />
     <arg name="use_stereo"  default="true" />
     <arg name="bag_start"   default="0" /> <!-- v1-2: 0, mh1: 40, mh2: 35, mh3: 17.5, mh4-5: 15 -->
-    <arg name="bag"         default="/home/hoangqc/Datasets/Airsim-ros/NH-base-5ms.bag" />
+    <arg name="bag"         default="/home/hoangqc/Datasets/Airsim-ros/NH-base-40fps.bag" />
 
     <!-- imu starting thresholds -->
     <arg name="init_window_time"  default="0.75" />
@@ -39,7 +39,7 @@
         <param name="max_clones"             type="int"    value="11" />
         <param name="max_slam"               type="int"    value="75" />
         <param name="max_slam_in_update"     type="int"    value="25" /> <!-- 25 seems to work well -->
-        <param name="max_msckf_in_update"    type="int"    value="40" />
+        <param name="max_msckf_in_update"    type="int"    value="60" />
         <param name="max_cameras"            type="int"    value="$(arg max_cameras)" />
         <param name="dt_slam_delay"          type="double" value="3" />
         <param name="init_window_time"       type="double" value="$(arg init_window_time)" />
@@ -82,10 +82,6 @@
         <param name="up_slam_chi2_multipler"       type="double"   value="1" />
         <param name="up_aruco_sigma_px"            type="double"   value="1" />
         <param name="up_aruco_chi2_multipler"      type="double"   value="1" />
-<!--        <param name="gyroscope_noise_density"      type="double"   value="0" />-->
-<!--        <param name="gyroscope_random_walk"        type="double"   value="0" />-->
-<!--        <param name="accelerometer_noise_density"  type="double"   value="0" />-->
-<!--        <param name="accelerometer_random_walk"    type="double"   value="0" />-->
         <param name="gyroscope_noise_density"      type="double"   value="8.73e-5" />
         <param name="gyroscope_random_walk"        type="double"   value="9.97e-7" />
         <param name="accelerometer_noise_density"  type="double"   value="2.35e-3" />
