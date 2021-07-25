@@ -1,9 +1,9 @@
 /*
  * OpenVINS: An Open Platform for Visual-Inertial Research
- * Copyright (C) 2019 Patrick Geneva
+ * Copyright (C) 2021 Patrick Geneva
+ * Copyright (C) 2021 Guoquan Huang
+ * Copyright (C) 2021 OpenVINS Contributors
  * Copyright (C) 2019 Kevin Eckenhoff
- * Copyright (C) 2019 Guoquan Huang
- * Copyright (C) 2019 OpenVINS Contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +18,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
 
 /**
  * @namespace ov_eval
@@ -40,15 +39,12 @@
  * - Timing of system components
  *
  * The absolute and relative error scripts have been implemented in C++ to allow for fast computation on multiple runs.
- * We recommend that people look at the [rpg_trajectory_evaluation](https://github.com/uzh-rpg/rpg_trajectory_evaluation) toolbox provided by Zhang and Scaramuzza.
- * For a background we recommend reading their [A Tutorial on Quantitative Trajectory Evaluation for Visual(-Inertial) Odometry](http://rpg.ifi.uzh.ch/docs/IROS18_Zhang.pdf) @cite Zhang2018IROS
- * and its use in [A Benchmark Comparison of Monocular Visual-Inertial Odometry Algorithms for Flying Robots](http://rpg.ifi.uzh.ch/docs/ICRA18_Delmerico.pdf) @cite Delmerico2018ICRA.
+ * We recommend that people look at the [rpg_trajectory_evaluation](https://github.com/uzh-rpg/rpg_trajectory_evaluation) toolbox provided
+ * by Zhang and Scaramuzza. For a background we recommend reading their [A Tutorial on Quantitative Trajectory Evaluation for
+ * Visual(-Inertial) Odometry](http://rpg.ifi.uzh.ch/docs/IROS18_Zhang.pdf) @cite Zhang2018IROS and its use in [A Benchmark Comparison of
+ * Monocular Visual-Inertial Odometry Algorithms for Flying Robots](http://rpg.ifi.uzh.ch/docs/ICRA18_Delmerico.pdf)
+ * @cite Delmerico2018ICRA
  *
  *
  */
-namespace ov_eval { }
-
-
-
-
-
+namespace ov_eval {}
