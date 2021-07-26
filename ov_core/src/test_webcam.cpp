@@ -34,7 +34,7 @@
 #include <boost/filesystem.hpp>
 
 #include "cam/CamRadtan.h"
-//#include "track/TrackAruco.h"
+#include "track/TrackAruco.h"
 #include "track/TrackDescriptor.h"
 #include "track/TrackKLT.h"
 #include "utils/CLI11.hpp"

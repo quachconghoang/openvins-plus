@@ -35,7 +35,7 @@
 #include <opencv2/highgui/highgui.hpp>
 
 #include "cam/CamRadtan.h"
-//#include "track/TrackAruco.h"
+#include "track/TrackAruco.h"
 #include "track/TrackDescriptor.h"
 #include "track/TrackKLT.h"
 
@@ -120,10 +120,10 @@ int main(int argc, char **argv) {
   }
 
   // Lets make a feature extractor
-  extractor = new TrackKLT(cameras, num_pts, num_aruco, !use_stereo, method, fast_threshold, grid_x, grid_y, min_px_dist);
+  //extractor = new TrackKLT(cameras, num_pts, num_aruco, !use_stereo, method, fast_threshold, grid_x, grid_y, min_px_dist);
   // extractor = new TrackDescriptor(cameras, num_pts, num_aruco, !use_stereo, method, fast_threshold, grid_x, grid_y, min_px_dist,
   // knn_ratio);
-//  extractor = new TrackAruco(cameras, num_aruco, !use_stereo, method, do_downsizing);
+  extractor = new TrackAruco(cameras, num_aruco, !use_stereo, method, do_downsizing);
 
   //===================================================================================
   //===================================================================================
