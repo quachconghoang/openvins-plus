@@ -33,7 +33,7 @@
 #include "cam/CamEqui.h"
 #include "cam/CamRadtan.h"
 #include "init/InertialInitializer.h"
-#include "track/TrackAruco.h"
+//#include "track/TrackAruco.h"
 #include "track/TrackDescriptor.h"
 #include "track/TrackKLT.h"
 #include "track/TrackSIM.h"
