@@ -2,9 +2,9 @@
 
     <!-- mono or stereo and what ros bag to play -->
     <arg name="max_cameras" default="2" />
-    <arg name="use_stereo"  default="true" />
+    <arg name="use_stereo"  default="false" />
     <arg name="bag_start"   default="0" /> <!-- v1-2: 0, mh1: 40, mh2: 35, mh3: 17.5, mh4-5: 15 -->
-    <arg name="bag"         default="/home/hoangqc/Datasets/Airsim-ros/NH-base-40fps.bag" />
+    <arg name="bag"         default="/home/hoangqc/Datasets/Airsim-ros/Blocks-00.bag" />
 
     <!-- imu starting thresholds -->
     <arg name="init_window_time"  default="0.75" />
@@ -92,10 +92,14 @@
         <rosparam param="cam1_wh">[640, 400]</rosparam>
         <param name="cam0_is_fisheye" type="bool" value="false" />
         <param name="cam1_is_fisheye" type="bool" value="false" />
-        <rosparam param="cam0_k">[170.147, 170.147, 320.0, 200.0]</rosparam>
+        <rosparam param="cam0_k">[320, 320, 320.0, 200.0]</rosparam>
         <rosparam param="cam0_d">[0.0, 0.0, 0.0, 0.0]</rosparam>
-        <rosparam param="cam1_k">[170.147, 170.147, 320.0, 200.0]</rosparam>
+        <rosparam param="cam1_k">[320, 320, 320.0, 200.0]</rosparam>
         <rosparam param="cam1_d">[0.0, 0.0, 0.0, 0.0]</rosparam>
+<!--        <rosparam param="cam0_k">[170.147, 170.147, 320.0, 200.0]</rosparam>-->
+<!--        <rosparam param="cam0_d">[0.0, 0.0, 0.0, 0.0]</rosparam>-->
+<!--        <rosparam param="cam1_k">[170.147, 170.147, 320.0, 200.0]</rosparam>-->
+<!--        <rosparam param="cam1_d">[0.0, 0.0, 0.0, 0.0]</rosparam>-->
 
         <!-- camera extrinsics -->
         <rosparam param="T_C0toI">

@@ -21,8 +21,8 @@
         <rosparam param="stereo_pairs">[0, 1]</rosparam>
 
         <!-- bag parameters -->
-        <param name="path_bag"    type="string" value="/home/hoangqc/Datasets/Airsim-ros/NH-base-20fps.bag" />
-        <param name="path_gt"     type="string" value="/home/hoangqc/Datasets/Airsim-ros/1-gt/NH-base-20fps.csv" />
+        <param name="path_bag"    type="string" value="/home/hoangqc/Datasets/Airsim-ros/Blocks-00.bag" />
+        <param name="path_gt"     type="string" value="/home/hoangqc/Datasets/Airsim-ros/1-gt/Blocks-00.csv" />
         <param name="bag_start"   type="int"    value="0" />
         <param name="bag_durr"    type="int"    value="-1" />
 
@@ -96,10 +96,14 @@
         <rosparam param="cam1_wh">[640, 400]</rosparam>
         <param name="cam0_is_fisheye" type="bool" value="false" />
         <param name="cam1_is_fisheye" type="bool" value="false" />
-        <rosparam param="cam0_k">[170.147, 170.147, 320.0, 200.0]</rosparam>
+        <rosparam param="cam0_k">[320, 320, 320.0, 200.0]</rosparam>
         <rosparam param="cam0_d">[0.0, 0.0, 0.0, 0.0]</rosparam>
-        <rosparam param="cam1_k">[170.147, 170.147, 320.0, 200.0]</rosparam>
+        <rosparam param="cam1_k">[320, 320, 320.0, 200.0]</rosparam>
         <rosparam param="cam1_d">[0.0, 0.0, 0.0, 0.0]</rosparam>
+<!--        <rosparam param="cam0_k">[170.147, 170.147, 320.0, 200.0]</rosparam>-->
+<!--        <rosparam param="cam0_d">[0.0, 0.0, 0.0, 0.0]</rosparam>-->
+<!--        <rosparam param="cam1_k">[170.147, 170.147, 320.0, 200.0]</rosparam>-->
+<!--        <rosparam param="cam1_d">[0.0, 0.0, 0.0, 0.0]</rosparam>-->
 
 
         <!-- camera extrinsics -->

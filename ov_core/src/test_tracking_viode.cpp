@@ -1,9 +1,9 @@
 /*
  * OpenVINS: An Open Platform for Visual-Inertial Research
- * Copyright (C) 2019 Patrick Geneva
+ * Copyright (C) 2021 Patrick Geneva
+ * Copyright (C) 2021 Guoquan Huang
+ * Copyright (C) 2021 OpenVINS Contributors
  * Copyright (C) 2019 Kevin Eckenhoff
- * Copyright (C) 2019 Guoquan Huang
- * Copyright (C) 2019 OpenVINS Contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,34 +18,31 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 #include <cmath>
-#include <vector>
 #include <deque>
-#include <iomanip>
-#include <fstream>
 #include <sstream>
 #include <unistd.h>
+#include <vector>
 
+#include <cv_bridge/cv_bridge.h>
 #include <ros/ros.h>
 #include <rosbag/bag.h>
 #include <rosbag/view.h>
 #include <sensor_msgs/Image.h>
-#include <cv_bridge/cv_bridge.h>
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
-#include <boost/filesystem.hpp>
-#include <boost/date_time/posix_time/posix_time.hpp>
-
-#include "track/TrackKLT.h"
-#include "track/TrackDescriptor.h"
+#include "cam/CamRadtan.h"
 #include "track/TrackAruco.h"
+#include "track/TrackDescriptor.h"
+#include "track/TrackKLT.h"
 
 using namespace ov_core;
 
 // Our feature extractor
-TrackBase* extractor;
+TrackBase *extractor;
 
 // FPS counter, and other statistics
 // https://gamedev.stackexchange.com/a/83174
@@ -58,13 +55,11 @@ std::deque<double> clonetimes;
 ros::Time time_start;
 
 // Our master function for tracking
-void handle_stereo(double time0, double time1, cv::Mat img0, cv::Mat img1, bool use_stereo);
-
+void handle_stereo(double time0, double time1, cv::Mat img0, cv::Mat img1);
 
 // Main function
-int main(int argc, char** argv)
-{
-    ros::init(argc, argv, "test_tracking_viode");
+int main(int argc, char **argv) {
+    ros::init(argc, argv, "test_tracking");
     ros::NodeHandle nh("~");
 
     // Our camera topics (left and right stereo)
@@ -75,8 +70,9 @@ int main(int argc, char** argv)
 
     // Location of the ROS bag we want to read in
     std::string path_to_bag;
-    nh.param<std::string>("path_bag", path_to_bag, "/home/hoangqc/Datasets/VIODE/city_day_1_low.bag");
-    //nh.param<std::string>("path_bag", path_to_bag, "/home/patrick/datasets/eth/V2_03_difficult.bag");
+//    nh.param<std::string>("path_bag", path_to_bag, "/home/hoangqc/Datasets/VIODE/city_day_3_high.bag");
+    nh.param<std::string>("path_bag", path_to_bag, "/home/hoangqc/Datasets/VIODE/city_day_0_none.bag");
+    // nh.param<std::string>("path_bag", path_to_bag, "/home/patrick/datasets/open_vins/aruco_room_01.bag");
     printf("ros bag path is: %s\n", path_to_bag.c_str());
 
     // Get our start location and how much of the bag we want to play
@@ -85,24 +81,19 @@ int main(int argc, char** argv)
     nh.param<double>("bag_start", bag_start, 0);
     nh.param<double>("bag_durr", bag_durr, -1);
 
-
-    //===================================================================================
-    //===================================================================================
-    //===================================================================================
-
-
     // Parameters for our extractor
+    ov_core::TrackBase::HistogramMethod method = ov_core::TrackBase::HistogramMethod::NONE;
     int num_pts, num_aruco, fast_threshold, grid_x, grid_y, min_px_dist;
     double knn_ratio;
     bool do_downsizing, use_stereo;
-    nh.param<int>("num_pts", num_pts, 800);
+    nh.param<int>("num_pts", num_pts, 400);
     nh.param<int>("num_aruco", num_aruco, 1024);
     nh.param<int>("clone_states", clone_states, 11);
     nh.param<int>("fast_threshold", fast_threshold, 10);
     nh.param<int>("grid_x", grid_x, 9);
     nh.param<int>("grid_y", grid_y, 7);
-    nh.param<int>("min_px_dist", min_px_dist, 3);
-    nh.param<double>("knn_ratio", knn_ratio, 0.85);
+    nh.param<int>("min_px_dist", min_px_dist, 10);
+    nh.param<double>("knn_ratio", knn_ratio, 0.70);
     nh.param<bool>("downsize_aruco", do_downsizing, false);
     nh.param<bool>("use_stereo", use_stereo, true);
 
@@ -116,28 +107,23 @@ int main(int argc, char** argv)
     printf("downsize aruco image: %d\n", do_downsizing);
 
     // Fake camera info (we don't need this, as we are not using the normalized coordinates for anything)
-    Eigen::Matrix<double,8,1> cam0_calib;
-    cam0_calib << 1,1,0,0,0,0,0,0;
-
-    // Create our n-camera vectors
-    std::map<size_t,bool> camera_fisheye;
-    std::map<size_t,Eigen::VectorXd> camera_calibration;
-    camera_fisheye.insert({0,false});
-    camera_calibration.insert({0,cam0_calib});
-    camera_fisheye.insert({1,false});
-    camera_calibration.insert({1,cam0_calib});
+    std::unordered_map<size_t, std::shared_ptr<CamBase>> cameras;
+    for (int i = 0; i < 2; i++) {
+        Eigen::Matrix<double, 8, 1> cam0_calib;
+        cam0_calib << 1, 1, 0, 0, 0, 0, 0, 0;
+        std::shared_ptr<CamBase> camera_calib = std::make_shared<CamRadtan>();
+        camera_calib->set_value(cam0_calib);
+        cameras.insert({i, camera_calib});
+    }
 
     // Lets make a feature extractor
-    extractor = new TrackKLT(num_pts, num_aruco, fast_threshold, grid_x, grid_y, min_px_dist);
-    //extractor = new TrackDescriptor(num_pts,num_aruco,true,fast_threshold,grid_x,grid_y,knn_ratio);
-    //extractor = new TrackAruco(num_aruco,true,do_downsizing);
-    extractor->set_calibration(camera_calibration, camera_fisheye);
-
+//    extractor = new TrackKLT(cameras, num_pts, num_aruco, !use_stereo, method, fast_threshold, grid_x, grid_y, min_px_dist);
+     extractor = new TrackDescriptor(cameras, num_pts, num_aruco, !use_stereo, method, fast_threshold, grid_x, grid_y, min_px_dist, knn_ratio);
+//    extractor = new TrackAruco(cameras, num_aruco, !use_stereo, method, do_downsizing);
 
     //===================================================================================
     //===================================================================================
     //===================================================================================
-
 
     // Load rosbag here, and find messages we can play
     rosbag::Bag bag;
@@ -153,7 +139,7 @@ int main(int argc, char** argv)
     view_full.addQuery(bag);
     ros::Time time_init = view_full.getBeginTime();
     time_init += ros::Duration(bag_start);
-    ros::Time time_finish = (bag_durr < 0)? view_full.getEndTime() : time_init + ros::Duration(bag_durr);
+    ros::Time time_finish = (bag_durr < 0) ? view_full.getEndTime() : time_init + ros::Duration(bag_durr);
     printf("time start = %.6f\n", time_init.toSec());
     printf("time end   = %.6f\n", time_finish.toSec());
     view.addQuery(bag, time_init, time_finish);
@@ -176,7 +162,7 @@ int main(int argc, char** argv)
     double time1 = time_init.toSec();
 
     // Step through the rosbag
-    for (const rosbag::MessageInstance& m : view) {
+    for (const rosbag::MessageInstance &m : view) {
 
         // If ros is wants us to stop, break out
         if (!ros::ok())
@@ -196,7 +182,7 @@ int main(int argc, char** argv)
             // Save to our temp variable
             has_left = true;
             cv::equalizeHist(cv_ptr->image, img0);
-            //img0 = cv_ptr->image.clone();
+            // img0 = cv_ptr->image.clone();
             time0 = cv_ptr->header.stamp.toSec();
         }
 
@@ -214,47 +200,62 @@ int main(int argc, char** argv)
             // Save to our temp variable
             has_right = true;
             cv::equalizeHist(cv_ptr->image, img1);
-            //img1 = cv_ptr->image.clone();
+            // img1 = cv_ptr->image.clone();
             time1 = cv_ptr->header.stamp.toSec();
         }
 
-
         // If we have both left and right, then process
-        if(has_left && has_right) {
+        if (has_left && has_right) {
             // process
-            handle_stereo(time0, time1, img0, img1, use_stereo);
+            handle_stereo(time0, time1, img0, img1);
             // reset bools
             has_left = false;
             has_right = false;
         }
-
-
     }
 
     // Done!
     return EXIT_SUCCESS;
 }
 
-
-
 /**
  * This function will process the new stereo pair with the extractor!
  */
-void handle_stereo(double time0, double time1, cv::Mat img0, cv::Mat img1, bool use_stereo) {
+void handle_stereo(double time0, double time1, cv::Mat img0, cv::Mat img1) {
+
+    // Animate our dynamic mask moving
+    // Very simple ball bounding around the screen example
+    cv::Mat mask = cv::Mat::zeros(cv::Size(img0.cols, img0.rows), CV_8UC1);
+    static cv::Point2f ball_center;
+    static cv::Point2f ball_velocity;
+    if (ball_velocity.x == 0 || ball_velocity.y == 0) {
+        ball_center.x = (float)img0.cols / 2.0f;
+        ball_center.y = (float)img0.rows / 2.0f;
+        ball_velocity.x = 2.5;
+        ball_velocity.y = 2.5;
+    }
+    ball_center += ball_velocity;
+    if (ball_center.x < 0 || (int)ball_center.x > img0.cols)
+        ball_velocity.x *= -1;
+    if (ball_center.y < 0 || (int)ball_center.y > img0.rows)
+        ball_velocity.y *= -1;
+    cv::circle(mask, ball_center, 100, cv::Scalar(255), cv::FILLED);
 
     // Process this new image
-    if(use_stereo) {
-        extractor->feed_stereo(time0, img0, img1, 0, 1);
-    } else {
-        extractor->feed_monocular(time0, img0, 0);
-        extractor->feed_monocular(time0, img1, 1);
-    }
-
+    ov_core::CameraData message;
+    message.timestamp = time0;
+    message.sensor_ids.push_back(0);
+    message.sensor_ids.push_back(1);
+    message.images.push_back(img0);
+    message.images.push_back(img1);
+    message.masks.push_back(mask);
+    message.masks.push_back(mask);
+    extractor->feed_new_camera(message);
 
     // Display the resulting tracks
     cv::Mat img_active, img_history;
-    extractor->display_active(img_active,255,0,0,0,0,255);
-    extractor->display_history(img_history,0,255,255,255,255,255);
+    extractor->display_active(img_active, 255, 0, 0, 0, 0, 255);
+    extractor->display_history(img_history, 255, 255, 0, 255, 255, 255);
 
     // Show our image!
     cv::imshow("Active Tracks", img_active);
@@ -267,10 +268,10 @@ void handle_stereo(double time0, double time1, cv::Mat img0, cv::Mat img1, bool 
     num_lostfeats += feats_lost.size();
 
     // Mark theses feature pointers as deleted
-    for(size_t i=0; i<feats_lost.size(); i++) {
+    for (size_t i = 0; i < feats_lost.size(); i++) {
         // Total number of measurements
         int total_meas = 0;
-        for (auto const& pair : feats_lost[i]->timestamps) {
+        for (auto const &pair : feats_lost[i]->timestamps) {
             total_meas += (int)pair.second.size();
         }
         // Update stats
@@ -282,14 +283,14 @@ void handle_stereo(double time0, double time1, cv::Mat img0, cv::Mat img1, bool 
     clonetimes.push_back(time0);
 
     // Marginalized features if we have reached 5 frame tracks
-    if((int)clonetimes.size() >= clone_states) {
+    if ((int)clonetimes.size() >= clone_states) {
         // Remove features that have reached their max track length
         double margtime = clonetimes.at(0);
         clonetimes.pop_front();
         std::vector<std::shared_ptr<Feature>> feats_marg = database->features_containing(margtime);
         num_margfeats += feats_marg.size();
         // Delete theses feature pointers
-        for(size_t i=0; i<feats_marg.size(); i++) {
+        for (size_t i = 0; i < feats_marg.size(); i++) {
             feats_marg[i]->to_delete = true;
         }
     }
@@ -300,15 +301,15 @@ void handle_stereo(double time0, double time1, cv::Mat img0, cv::Mat img1, bool 
     // Debug print out what our current processing speed it
     // We want the FPS to be as high as possible
     ros::Time time_curr = ros::Time::now();
-    //if (time_curr.toSec()-time_start.toSec() > 2) {
+    // if (time_curr.toSec()-time_start.toSec() > 2) {
     if (frames > 60) {
         // Calculate the FPS
-        double fps = (double) frames / (time_curr.toSec()-time_start.toSec());
-        double lpf = (double) num_lostfeats / frames;
-        double fpf = (double) featslengths / num_lostfeats;
-        double mpf = (double) num_margfeats / frames;
+        double fps = (double)frames / (time_curr.toSec() - time_start.toSec());
+        double lpf = (double)num_lostfeats / frames;
+        double fpf = (double)featslengths / num_lostfeats;
+        double mpf = (double)num_margfeats / frames;
         // DEBUG PRINT OUT
-        printf("fps = %.2f | lost_feats/frame = %.2f | track_length/lost_feat = %.2f | marg_tracks/frame = %.2f\n",fps,lpf,fpf,mpf);
+        printf("fps = %.2f | lost_feats/frame = %.2f | track_length/lost_feat = %.2f | marg_tracks/frame = %.2f\n", fps, lpf, fpf, mpf);
         // Reset variables
         frames = 0;
         time_start = time_curr;
@@ -317,6 +318,4 @@ void handle_stereo(double time0, double time1, cv::Mat img0, cv::Mat img1, bool 
         featslengths = 0;
     }
     frames++;
-
 }
-

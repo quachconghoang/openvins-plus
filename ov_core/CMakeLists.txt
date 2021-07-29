@@ -14,6 +14,10 @@ if (NOT OpenCV_FOUND)
 endif()
 find_package(Boost REQUIRED COMPONENTS system filesystem thread date_time)
 
+set(CMAKE_PREFIX_PATH "~/local")
+    find_package(Torch REQUIRED)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TORCH_CXX_FLAGS}")
+
 # Display message to user
 message(WARNING "OPENCV VERSION: " ${OpenCV_VERSION})
 message(WARNING "BOOST VERSION: " ${Boost_VERSION})
@@ -104,6 +108,8 @@ if (catkin_FOUND AND ENABLE_CATKIN_ROS)
     target_link_libraries(test_tracking ov_core_lib ${thirdparty_libraries})
 endif()
 
+add_executable(test_tracking_viode src/test_tracking_viode.cpp)
+target_link_libraries(test_tracking_viode ov_core_lib ${thirdparty_libraries})
 add_executable(test_webcam src/test_webcam.cpp)
 target_link_libraries(test_webcam ov_core_lib ${thirdparty_libraries})
 
