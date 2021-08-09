@@ -5,12 +5,11 @@
     <arg name="use_stereo"  default="true" />
     <arg name="bag_start"   default="0" /> <!-- v1-2: 0, mh1: 40, mh2: 35, mh3: 17.5, mh4-5: 15 -->
     <!-- <arg name="bag"         default="/home/hoangqc/Datasets/VIODE/parking_lot_3_high.bag" /> -->
-    <arg name="bag"         default="/mnt/c/Users/hoangqc/Desktop/Datasets/VIODE/city_day_0_none.bag" />
-    
+    <arg name="bag"         default="/mnt/c/Users/hoangqc/Desktop/Datasets/datatest3_mode.bag" />
 
     <!-- imu starting thresholds -->
     <arg name="init_window_time"  default="0.75" />
-    <arg name="init_imu_thresh"   default="1.50" />
+    <arg name="init_imu_thresh"   default="0.5" />
 
     <!-- saving trajectory path and timing information -->
     <arg name="dosave"      default="true" />
@@ -64,7 +63,7 @@
 
         <!-- tracker/extractor properties -->
         <param name="use_klt"            type="bool"   value="true" />
-        <param name="num_pts"            type="int"    value="250" />
+        <param name="num_pts"            type="int"    value="400" />
         <param name="fast_threshold"     type="int"    value="15" />
         <param name="grid_x"             type="int"    value="5" />
         <param name="grid_y"             type="int"    value="3" />
@@ -91,30 +90,52 @@
         <param name="accelerometer_random_walk"    type="double"   value="1.25e-5" />
 
         <!-- camera intrinsics -->
-        <rosparam param="cam0_wh">[752, 480]</rosparam>
-        <rosparam param="cam1_wh">[752, 480]</rosparam>
-        <param name="cam0_is_fisheye" type="bool" value="false" />
-        <param name="cam1_is_fisheye" type="bool" value="false" />
-        <rosparam param="cam0_k">[376.0,376.0,376.0,240.0]</rosparam>
+        <rosparam param="cam0_wh">[672, 376]</rosparam>
+        <rosparam param="cam1_wh">[672, 376]</rosparam>
+        <param name="cam0_is_fisheye" type="bool" value="true" />
+        <param name="cam1_is_fisheye" type="bool" value="true" />
+        <!-- <rosparam param="cam0_k">[376.0,376.0,376.0,240.0]</rosparam>
         <rosparam param="cam0_d">[0.0, 0.0, 0.0, 0.0]</rosparam>
         <rosparam param="cam1_k">[376.0,376.0,376.0,240.0]</rosparam>
-        <rosparam param="cam1_d">[0.0, 0.0, 0.0, 0.0]</rosparam>
+        <rosparam param="cam1_d">[0.0, 0.0, 0.0, 0.0]</rosparam> -->
+        <rosparam param="cam0_k">[264.525, 264.304, 336.025, 189.109]</rosparam>
+        <rosparam param="cam0_d">[0.042, 0.010, -0.005, -0.0003]</rosparam>
+        <rosparam param="cam1_k">[263.578, 263.427, 340.177, 187.797]</rosparam>
+        <rosparam param="cam1_d">[-0.039, 0.009, -0.004, -0.001]</rosparam>
 
         <!-- camera extrinsics -->
-        <rosparam param="T_C0toI">
+        <!-- <rosparam param="T_C0toI">
             [
-            0.0, 0.0, 1.0, 0.0,
+            0.0, -1.0, 0.0, 0.0,
             1.0, 0.0, 0.0, 0.0,
-            0.0, 1.0, 0.0, 0.0,
+            0.0, 0.0, 1.0, 0.0,
             0.0, 0.0, 0.0, 1.0
             ]
         </rosparam>
         <rosparam param="T_C1toI">
             [
+            0.0, -1.0, 0.0, 0.0,
+            1.0, 0.0, 0.0, 0.12,
             0.0, 0.0, 1.0, 0.0,
-            1.0, 0.0, 0.0, 0.05,
-            0.0, 1.0, 0.0, 0.0,
             0.0, 0.0, 0.0, 1.0
+            ]
+        </rosparam> -->
+
+          <!-- camera extrinsics -->
+        <rosparam param="T_C0toI">
+            [
+                0.00916668776984686, -0.9999508579504861, 0.003775383347028649, -0.10031401932563686,
+                0.000799258388630264, -0.0037682139625440647, -0.9999925808472585, 0.005421274724173588,
+                0.9999576656145792, 0.009169637267600617, 0.0007646770705903583, 0.040830056141113125,
+                0.0, 0.0, 0.0, 1.0
+            ]
+        </rosparam>
+        <rosparam param="T_C1toI">
+            [
+                0.9999762529203078, 0.0011037407708745298, 0.006802598898783178, -0.11911122223386701,
+                -0.0011213192339498321, 0.9999960410276351, 0.0025808084466722885, 0.00015343654353025578,
+                -0.006799723423977697, -0.0025883750449944786, 0.9999735316877093, 0.001018077864795099,
+                0.0, 0.0, 0.0, 1.0
             ]
         </rosparam>
 

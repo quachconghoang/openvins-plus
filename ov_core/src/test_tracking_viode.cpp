@@ -71,8 +71,7 @@ int main(int argc, char **argv) {
     // Location of the ROS bag we want to read in
     std::string path_to_bag;
 //    nh.param<std::string>("path_bag", path_to_bag, "/home/hoangqc/Datasets/VIODE/city_day_3_high.bag");
-    nh.param<std::string>("path_bag", path_to_bag, "/home/hoangqc/Datasets/VIODE/city_day_0_none.bag");
-    // nh.param<std::string>("path_bag", path_to_bag, "/home/patrick/datasets/open_vins/aruco_room_01.bag");
+    nh.param<std::string>("path_bag", path_to_bag, "/mnt/c/Users/hoangqc/Desktop/Datasets/VIODE/city_day_0_none.bag");
     printf("ros bag path is: %s\n", path_to_bag.c_str());
 
     // Get our start location and how much of the bag we want to play
@@ -82,7 +81,7 @@ int main(int argc, char **argv) {
     nh.param<double>("bag_durr", bag_durr, -1);
 
     // Parameters for our extractor
-    ov_core::TrackBase::HistogramMethod method = ov_core::TrackBase::HistogramMethod::NONE;
+    ov_core::TrackBase::HistogramMethod method = ov_core::TrackBase::HistogramMethod::CLAHE;
     int num_pts, num_aruco, fast_threshold, grid_x, grid_y, min_px_dist;
     double knn_ratio;
     bool do_downsizing, use_stereo;
@@ -117,8 +116,8 @@ int main(int argc, char **argv) {
     }
 
     // Lets make a feature extractor
-//    extractor = new TrackKLT(cameras, num_pts, num_aruco, !use_stereo, method, fast_threshold, grid_x, grid_y, min_px_dist);
-     extractor = new TrackDescriptor(cameras, num_pts, num_aruco, !use_stereo, method, fast_threshold, grid_x, grid_y, min_px_dist, knn_ratio);
+   extractor = new TrackKLT(cameras, num_pts, num_aruco, !use_stereo, method, fast_threshold, grid_x, grid_y, min_px_dist);
+    // extractor = new TrackDescriptor(cameras, num_pts, num_aruco, !use_stereo, method, fast_threshold, grid_x, grid_y, min_px_dist, knn_ratio);
 //    extractor = new TrackAruco(cameras, num_aruco, !use_stereo, method, do_downsizing);
 
     //===================================================================================
@@ -239,7 +238,7 @@ void handle_stereo(double time0, double time1, cv::Mat img0, cv::Mat img1) {
         ball_velocity.x *= -1;
     if (ball_center.y < 0 || (int)ball_center.y > img0.rows)
         ball_velocity.y *= -1;
-    cv::circle(mask, ball_center, 100, cv::Scalar(255), cv::FILLED);
+    // cv::circle(mask, ball_center, 100, cv::Scalar(255), cv::FILLED);
 
     // Process this new image
     ov_core::CameraData message;
