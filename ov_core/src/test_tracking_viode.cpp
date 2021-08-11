@@ -38,6 +38,7 @@
 #include "track/TrackAruco.h"
 #include "track/TrackDescriptor.h"
 #include "track/TrackKLT.h"
+#include "track/TrackTorch.h"
 
 using namespace ov_core;
 
@@ -70,8 +71,8 @@ int main(int argc, char **argv) {
 
     // Location of the ROS bag we want to read in
     std::string path_to_bag;
-//    nh.param<std::string>("path_bag", path_to_bag, "/home/hoangqc/Datasets/VIODE/city_day_3_high.bag");
-    nh.param<std::string>("path_bag", path_to_bag, "/mnt/c/Users/hoangqc/Desktop/Datasets/VIODE/city_day_0_none.bag");
+    nh.param<std::string>("path_bag", path_to_bag, "/home/hoangqc/Datasets/VIODE/city_day_3_high.bag");
+//    nh.param<std::string>("path_bag", path_to_bag, "/mnt/c/Users/hoangqc/Desktop/Datasets/VIODE/city_day_0_none.bag");
     printf("ros bag path is: %s\n", path_to_bag.c_str());
 
     // Get our start location and how much of the bag we want to play
@@ -116,8 +117,9 @@ int main(int argc, char **argv) {
     }
 
     // Lets make a feature extractor
-   extractor = new TrackKLT(cameras, num_pts, num_aruco, !use_stereo, method, fast_threshold, grid_x, grid_y, min_px_dist);
-    // extractor = new TrackDescriptor(cameras, num_pts, num_aruco, !use_stereo, method, fast_threshold, grid_x, grid_y, min_px_dist, knn_ratio);
+//   extractor = new TrackKLT(cameras, num_pts, num_aruco, !use_stereo, method, fast_threshold, grid_x, grid_y, min_px_dist);
+     extractor = new TrackDescriptor(cameras, num_pts, num_aruco, !use_stereo, method, fast_threshold, grid_x, grid_y, min_px_dist, knn_ratio);
+     extractor = new TrackTorch(cameras, num_pts, num_aruco, !use_stereo, method, fast_threshold, grid_x, grid_y, min_px_dist, knn_ratio);
 //    extractor = new TrackAruco(cameras, num_aruco, !use_stereo, method, do_downsizing);
 
     //===================================================================================

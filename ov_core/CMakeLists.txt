@@ -14,10 +14,6 @@ if (NOT OpenCV_FOUND)
 endif()
 find_package(Boost REQUIRED COMPONENTS system filesystem thread date_time)
 
-set(CMAKE_PREFIX_PATH "~/local")
-    find_package(Torch REQUIRED)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TORCH_CXX_FLAGS}")
-
 # Display message to user
 message(WARNING "OPENCV VERSION: " ${OpenCV_VERSION})
 message(WARNING "BOOST VERSION: " ${Boost_VERSION})
@@ -92,12 +88,31 @@ add_library(ov_core_lib SHARED
         src/track/TrackDescriptor.cpp
         src/track/TrackKLT.cpp
         src/track/TrackSIM.cpp
+        src/track/TrackTorch.cpp
         src/types/Landmark.cpp
         src/feat/Feature.cpp
-        src/feat/FeatureInitializer.cpp
-)
+        src/feat/FeatureInitializer.cpp)
 target_link_libraries(ov_core_lib ${thirdparty_libraries})
 target_include_directories(ov_core_lib PUBLIC src)
+
+#TORCH HERE-WE-GO
+set(CMAKE_PREFIX_PATH "~/local")
+find_package(Torch REQUIRED)
+if(TORCH_FOUND)
+    set(CMAKE_CXX_STANDARD 14)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TORCH_CXX_FLAGS}")
+    find_package( CUDA REQUIRED )
+    message(STATUS "Found CUDA ${CUDA_VERSION_STRING} at ${CUDA_TOOLKIT_ROOT_DIR}")
+    set(CUDA_NVCC_FLAGS "-gencode arch=compute_75,code=sm_75;-rdc=true;-use_fast_math")
+    include_directories(
+            ${CUDA_INCLUDE_DIRS}
+            ${TORCH_INCLUDE_DIRS})
+    list(APPEND thirdparty_libraries
+            ${TORCH_LIBRARIES})
+    set_property(TARGET ov_core_lib PROPERTY CXX_STANDARD 14)
+endif()
+
+
 
 
 ##################################################
