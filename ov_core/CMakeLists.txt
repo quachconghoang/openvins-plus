@@ -76,25 +76,6 @@ list(APPEND thirdparty_libraries
         ${catkin_LIBRARIES}
 )
 
-##################################################
-# Make the core library
-##################################################
-add_library(ov_core_lib SHARED
-        src/dummy.cpp
-        src/init/InertialInitializer.cpp
-        src/sim/BsplineSE3.cpp
-        src/track/TrackBase.cpp
-        src/track/TrackAruco.cpp
-        src/track/TrackDescriptor.cpp
-        src/track/TrackKLT.cpp
-        src/track/TrackSIM.cpp
-        src/track/TrackTorch.cpp
-        src/types/Landmark.cpp
-        src/feat/Feature.cpp
-        src/feat/FeatureInitializer.cpp)
-target_link_libraries(ov_core_lib ${thirdparty_libraries})
-target_include_directories(ov_core_lib PUBLIC src)
-
 #TORCH HERE-WE-GO
 set(CMAKE_PREFIX_PATH "~/local")
 find_package(Torch REQUIRED)
@@ -109,23 +90,40 @@ if(TORCH_FOUND)
             ${TORCH_INCLUDE_DIRS})
     list(APPEND thirdparty_libraries
             ${TORCH_LIBRARIES})
-    set_property(TARGET ov_core_lib PROPERTY CXX_STANDARD 14)
 endif()
 
-
-
+##################################################
+# Make the core library
+##################################################
+add_library(ov_core_lib SHARED
+        src/dummy.cpp
+        src/init/InertialInitializer.cpp
+        src/sim/BsplineSE3.cpp
+        src/track/TrackBase.cpp
+        src/track/TrackAruco.cpp
+        src/track/TrackDescriptor.cpp
+        src/track/TrackKLT.cpp
+        src/track/TrackSIM.cpp
+        src/track/TrackTorch.cpp
+        src/track/Superpoint.cpp
+        src/types/Landmark.cpp
+        src/feat/Feature.cpp
+        src/feat/FeatureInitializer.cpp)
+target_link_libraries(ov_core_lib ${thirdparty_libraries})
+set_property(TARGET ov_core_lib PROPERTY CXX_STANDARD 14)
+target_include_directories(ov_core_lib PUBLIC src)
 
 ##################################################
 # Make binary files!
 ##################################################
-if (catkin_FOUND AND ENABLE_CATKIN_ROS)
-    add_executable(test_tracking src/test_tracking.cpp)
-    target_link_libraries(test_tracking ov_core_lib ${thirdparty_libraries})
-endif()
+#if (catkin_FOUND AND ENABLE_CATKIN_ROS)
+#    add_executable(test_tracking src/test_tracking.cpp)
+#    target_link_libraries(test_tracking ov_core_lib ${thirdparty_libraries})
+#endif()
 
 add_executable(test_tracking_viode src/test_tracking_viode.cpp)
 target_link_libraries(test_tracking_viode ov_core_lib ${thirdparty_libraries})
-add_executable(test_webcam src/test_webcam.cpp)
-target_link_libraries(test_webcam ov_core_lib ${thirdparty_libraries})
+#add_executable(test_webcam src/test_webcam.cpp)
+#target_link_libraries(test_webcam ov_core_lib ${thirdparty_libraries})
 
 

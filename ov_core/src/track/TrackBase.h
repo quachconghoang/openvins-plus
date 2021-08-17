@@ -196,6 +196,9 @@ protected:
 
   // Timing variables (most children use these...)
   boost::posix_time::ptime rT1, rT2, rT3, rT4, rT5, rT6, rT7;
+
+    std::vector<cv::KeyPoint> kpts_left;
+    cv::Mat desc_left;
 };
 
 } // namespace ov_core

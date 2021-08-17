@@ -82,6 +82,11 @@ void TrackBase::display_active(cv::Mat &img_out, int r1, int g1, int b1, int r2,
       cv::Point2f pt_l_bot = cv::Point2f(pt_l.x + 5, pt_l.y + 5);
       cv::rectangle(img_temp, pt_l_top, pt_l_bot, cv::Scalar(r2, g2, b2), 1);
     }
+
+      for (auto kpts: kpts_left) {
+          cv::circle(img_out, kpts.pt, 2, cv::Scalar(0,128,255),2, cv::FILLED);
+      }
+
     // Draw what camera this is
     auto txtpt = (is_small) ? cv::Point(10, 30) : cv::Point(30, 60);
     cv::putText(img_temp, "CAM:" + std::to_string((int)pair.first), txtpt, cv::FONT_HERSHEY_COMPLEX_SMALL, (is_small) ? 1.5 : 3.0,

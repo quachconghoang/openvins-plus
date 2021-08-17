@@ -71,7 +71,7 @@ int main(int argc, char **argv) {
 
     // Location of the ROS bag we want to read in
     std::string path_to_bag;
-    nh.param<std::string>("path_bag", path_to_bag, "/home/hoangqc/Datasets/VIODE/city_day_3_high.bag");
+    nh.param<std::string>("path_bag", path_to_bag, "/home/hoangqc/Datasets/EuroC/MH_04_difficult.bag");
 //    nh.param<std::string>("path_bag", path_to_bag, "/mnt/c/Users/hoangqc/Desktop/Datasets/VIODE/city_day_0_none.bag");
     printf("ros bag path is: %s\n", path_to_bag.c_str());
 
@@ -82,11 +82,11 @@ int main(int argc, char **argv) {
     nh.param<double>("bag_durr", bag_durr, -1);
 
     // Parameters for our extractor
-    ov_core::TrackBase::HistogramMethod method = ov_core::TrackBase::HistogramMethod::CLAHE;
+    ov_core::TrackBase::HistogramMethod method = ov_core::TrackBase::HistogramMethod::HISTOGRAM;
     int num_pts, num_aruco, fast_threshold, grid_x, grid_y, min_px_dist;
     double knn_ratio;
     bool do_downsizing, use_stereo;
-    nh.param<int>("num_pts", num_pts, 400);
+    nh.param<int>("num_pts", num_pts, 300);
     nh.param<int>("num_aruco", num_aruco, 1024);
     nh.param<int>("clone_states", clone_states, 11);
     nh.param<int>("fast_threshold", fast_threshold, 10);
@@ -95,7 +95,7 @@ int main(int argc, char **argv) {
     nh.param<int>("min_px_dist", min_px_dist, 10);
     nh.param<double>("knn_ratio", knn_ratio, 0.70);
     nh.param<bool>("downsize_aruco", do_downsizing, false);
-    nh.param<bool>("use_stereo", use_stereo, true);
+    nh.param<bool>("use_stereo", use_stereo, false);
 
     // Debug print!
     printf("max features: %d\n", num_pts);
@@ -105,6 +105,8 @@ int main(int argc, char **argv) {
     printf("fast threshold: %d\n", fast_threshold);
     printf("min pixel distance: %d\n", min_px_dist);
     printf("downsize aruco image: %d\n", do_downsizing);
+    printf("use stereo %d\n", use_stereo);
+
 
     // Fake camera info (we don't need this, as we are not using the normalized coordinates for anything)
     std::unordered_map<size_t, std::shared_ptr<CamBase>> cameras;
@@ -118,8 +120,8 @@ int main(int argc, char **argv) {
 
     // Lets make a feature extractor
 //   extractor = new TrackKLT(cameras, num_pts, num_aruco, !use_stereo, method, fast_threshold, grid_x, grid_y, min_px_dist);
-     extractor = new TrackDescriptor(cameras, num_pts, num_aruco, !use_stereo, method, fast_threshold, grid_x, grid_y, min_px_dist, knn_ratio);
-     extractor = new TrackTorch(cameras, num_pts, num_aruco, !use_stereo, method, fast_threshold, grid_x, grid_y, min_px_dist, knn_ratio);
+//     extractor = new TrackDescriptor(cameras, num_pts, num_aruco, !use_stereo, method, fast_threshold, grid_x, grid_y, min_px_dist, knn_ratio);
+    extractor = new TrackTorch(cameras, num_pts, num_aruco, !use_stereo, method, fast_threshold, grid_x, grid_y, min_px_dist);
 //    extractor = new TrackAruco(cameras, num_aruco, !use_stereo, method, do_downsizing);
 
     //===================================================================================
