@@ -87,6 +87,22 @@ if (NOT catkin_FOUND OR NOT ENABLE_CATKIN_ROS)
     list(APPEND thirdparty_libraries ov_core_lib)
 endif()
 
+#TORCH HERE-WE-GO
+set(CMAKE_PREFIX_PATH "~/local")
+find_package(Torch REQUIRED)
+if(TORCH_FOUND)
+    set(CMAKE_CXX_STANDARD 14)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TORCH_CXX_FLAGS}")
+    find_package( CUDA REQUIRED )
+    message(STATUS "Found CUDA ${CUDA_VERSION_STRING} at ${CUDA_TOOLKIT_ROOT_DIR}")
+    set(CUDA_NVCC_FLAGS "-gencode arch=compute_75,code=sm_75;-rdc=true;-use_fast_math")
+    include_directories(
+            ${CUDA_INCLUDE_DIRS}
+            ${TORCH_INCLUDE_DIRS})
+    list(APPEND thirdparty_libraries
+            ${TORCH_LIBRARIES})
+endif()
+
 ##################################################
 # Make the core library
 ##################################################
@@ -107,6 +123,7 @@ if (catkin_FOUND AND ENABLE_CATKIN_ROS)
     )
 endif()
 add_library(ov_msckf_lib SHARED ${library_source_files})
+set_property(TARGET ov_msckf_lib PROPERTY CXX_STANDARD 14)
 target_link_libraries(ov_msckf_lib ${thirdparty_libraries})
 target_include_directories(ov_msckf_lib PUBLIC src)
 

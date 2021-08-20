@@ -4,8 +4,8 @@
     <arg name="max_cameras" default="2" />
     <arg name="use_stereo"  default="true" />
     <arg name="bag_start"   default="0" /> <!-- v1-2: 0, mh1: 40, mh2: 35, mh3: 17.5, mh4-5: 15 -->
-    <!-- <arg name="bag"         default="/home/hoangqc/Datasets/VIODE/parking_lot_3_high.bag" /> -->
-    <arg name="bag"         default="/mnt/c/Users/hoangqc/Desktop/Datasets/VIODE/city_day_0_none.bag" />
+    <arg name="bag"         default="/home/hoangqc/Datasets/VIODE/parking_lot_3_high.bag" />
+<!--    <arg name="bag"         default="/mnt/c/Users/hoangqc/Desktop/Datasets/VIODE/city_day_0_none.bag" />-->
     
 
     <!-- imu starting thresholds -->
@@ -27,7 +27,7 @@
         <param name="topic_imu"      type="string" value="/imu0" />
         <param name="topic_camera0"  type="string" value="/cam0/image_raw" />
         <param name="topic_camera1"  type="string" value="/cam1/image_raw" />
-        <!-- <param name="path_gt"     type="string" value="/home/hoangqc/Datasets/VIODE/gt/parking_lot_3_high.csv" /> -->
+         <param name="path_gt"     type="string" value="/home/hoangqc/Datasets/VIODE/gt/parking_lot_3_high.csv" />
         <rosparam param="stereo_pairs">[0, 1]</rosparam>
 
         <!-- world/filter parameters -->

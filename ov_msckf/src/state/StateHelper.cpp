@@ -99,7 +99,7 @@ void StateHelper::EKFPropagation(std::shared_ptr<State> state, const std::vector
       found_neg = true;
     }
   }
-  assert(!found_neg);
+//  assert(!found_neg);
 }
 
 void StateHelper::EKFUpdate(std::shared_ptr<State> state, const std::vector<std::shared_ptr<Type>> &H_order, const Eigen::MatrixXd &H,
@@ -166,7 +166,7 @@ void StateHelper::EKFUpdate(std::shared_ptr<State> state, const std::vector<std:
       found_neg = true;
     }
   }
-  assert(!found_neg);
+//  assert(!found_neg);
 
   // Calculate our delta and update all our active states
   Eigen::VectorXd dx = K * res;

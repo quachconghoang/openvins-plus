@@ -7,7 +7,7 @@
 using namespace ov_core;
 
 void TrackTorch::feed_new_camera(const CameraData &message) {
-    printf("TRACKTORCH: feed_new_camera \n");
+//    printf("TRACKTORCH: feed_new_camera \n");
     // Error check that we have all the data
     if (message.sensor_ids.empty() || message.sensor_ids.size() != message.images.size() || message.images.size() != message.masks.size()) {
         printf(RED "[ERROR]: MESSAGE DATA SIZES DO NOT MATCH OR EMPTY!!!\n" RESET);
@@ -47,7 +47,7 @@ void TrackTorch::feed_monocular(const CameraData &message, size_t msg_id) {
 }
 
 void TrackTorch::feed_stereo(const CameraData &message, size_t msg_id_left, size_t msg_id_right) {
-    printf("TRACKTORCH: FEED_STEREO \n");
+//    printf("TRACKTORCH: FEED_STEREO \n");
     // Start timing
     rT1 = boost::posix_time::microsec_clock::local_time();
 
@@ -76,10 +76,8 @@ void TrackTorch::feed_stereo(const CameraData &message, size_t msg_id_left, size
     mask_right = message.masks.at(msg_id_right);
 
     // Let's mode %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
-    cv::Mat inp;
-    img_left.convertTo(inp, CV_8UC1);
-    engine.compute_NN(inp);
-    engine.getKeyPoints(kpts_left, desc_left);
+
+//    engine.getKeyPointsAndDescriptors(kpts_left, desc_left);
 //    printf("GetPoints: %d \n", kpts_left.size());
 
     // Extract image pyramids
@@ -261,7 +259,7 @@ void TrackTorch::perform_detection_stereo(const std::vector<cv::Mat> &img0pyr, c
                                           size_t cam_id_left, size_t cam_id_right,
                                           std::vector<cv::KeyPoint> &pts0,std::vector<cv::KeyPoint> &pts1,
                                           std::vector<size_t> &ids0, std::vector<size_t> &ids1) {
-    printf("TRACKTORCH: perform_detection_stereo \n");
+//    printf("TRACKTORCH: perform_detection_stereo \n");
     // Create a 2D occupancy grid for this current image
     // Note that we scale this down, so that each grid point is equal to a set of pixels
     // This means that we will reject points that less then grid_px_size points away then existing features
@@ -311,7 +309,15 @@ void TrackTorch::perform_detection_stereo(const std::vector<cv::Mat> &img0pyr, c
 
         // Extract our features (use fast with griding)
         std::vector<cv::KeyPoint> pts0_ext;
-        Grider_FAST::perform_griding(img0pyr.at(0), mask0, pts0_ext, num_featsneeded_0, grid_x, grid_y, threshold, true);
+
+        cv::Mat inp;
+        img0pyr[0].convertTo(inp, CV_8UC1);
+        engine.compute_NN(inp);
+        engine.getKeyPoints(pts0_ext);
+        if ((int)pts0_ext.size()>num_featsneeded_0)
+            pts0_ext.resize(num_featsneeded_0);
+
+//        Grider_FAST::perform_griding(img0pyr.at(0), mask0, pts0_ext, num_featsneeded_0, grid_x, grid_y, threshold, true);
 
         // Now, reject features that are close a current feature
         std::vector<cv::KeyPoint> kpts0_new;
@@ -332,7 +338,7 @@ void TrackTorch::perform_detection_stereo(const std::vector<cv::Mat> &img0pyr, c
         }
 
         // TODO: Project points from the left frame into the right frame
-        // TODO: This will not work for large baseline systems.....
+        // TODO: This will not work for large baseline systems..... THAT IS THE SHIT - HOANGQC
         // TODO: If we had some depth estimates we could do a better projection
         // TODO: Or project and search along the epipolar line??
         std::vector<cv::KeyPoint> kpts1_new;
@@ -445,7 +451,13 @@ void TrackTorch::perform_detection_stereo(const std::vector<cv::Mat> &img0pyr, c
 
         // Extract our features (use fast with griding)
         std::vector<cv::KeyPoint> pts1_ext;
-        Grider_FAST::perform_griding(img1pyr.at(0), mask1, pts1_ext, num_featsneeded_1, grid_x, grid_y, threshold, true);
+        cv::Mat inp;
+        img1pyr[0].convertTo(inp, CV_8UC1);
+        engine.compute_NN(inp);
+        engine.getKeyPoints(pts1_ext);
+        if ((int)img1pyr.size()>num_featsneeded_1)
+            pts1_ext.resize(num_featsneeded_1);
+//        Grider_FAST::perform_griding(img1pyr.at(0), mask1, pts1_ext, num_featsneeded_1, grid_x, grid_y, threshold, true);
 
         // Now, reject features that are close a current feature
         for (auto &kpt : pts1_ext) {
@@ -468,7 +480,7 @@ void TrackTorch::perform_detection_stereo(const std::vector<cv::Mat> &img0pyr, c
 
 void TrackTorch::perform_matching(const std::vector<cv::Mat> &img0pyr, const std::vector<cv::Mat> &img1pyr, std::vector<cv::KeyPoint> &kpts0,
                                 std::vector<cv::KeyPoint> &kpts1, size_t id0, size_t id1, std::vector<uchar> &mask_out) {
-    printf("TRACKTORCH: perform_matching \n");
+//    printf("TRACKTORCH: perform_matching \n");
     // We must have equal vectors
     assert(kpts0.size() == kpts1.size());
 

@@ -6,6 +6,7 @@
 
 using namespace std;
 using namespace cv;
+using namespace ov_core;
 
 void cvImg_to_tensor(const Mat & img, torch::Tensor & inp);
 void non_maximum_suppression(const vector<at::Tensor> & yx, const at::Tensor & heat_vals, std::vector<cv::KeyPoint> & kps, int H, int W, int dist_thresh, int _border);
@@ -68,7 +69,7 @@ void Superpoint::compute_NN(cv::Mat & img_gray) {
     if(m_debug) printf("Superpoint Passed \n");
 }
 
-void Superpoint::getKeyPoints(std::vector<cv::KeyPoint> &kps, cv::Mat &desc) {
+void Superpoint::getKeyPointsAndDescriptors(std::vector<cv::KeyPoint> &kps, cv::Mat &desc) {
     at::Tensor dense = semi.exp();
     dense = dense / (at::sum(dense,0) + .00001);
 
@@ -94,6 +95,8 @@ void Superpoint::getKeyPoints(std::vector<cv::KeyPoint> &kps, cv::Mat &desc) {
     
     non_maximum_suppression(yx,z,kps, H, W, dist_thresh, border_remove);
 
+    //==============================
+
     const long num_pts = kps.size();
     const long D = coarse_desc.size(1);
 
@@ -103,10 +106,57 @@ void Superpoint::getKeyPoints(std::vector<cv::KeyPoint> &kps, cv::Mat &desc) {
     for (unsigned int i = 0; i < kps.size() ; i++) {
         sample_pts[i*2] = float(kps[i].pt.x)/W_2 - 1.f;
         sample_pts[i*2+1] = float(kps[i].pt.y)/H_2 - 1.f;
-        //Update real scale
-//        kps[i].pt = kps[i].pt*scale;
     }
 
+    at::Tensor sample_tensor = torch::from_blob(sample_pts.data(), {1, 1, num_pts, 2}, torch::TensorOptions().dtype(at::kFloat));
+    int64_t interpolation_mode = 0; // Bilinear
+    int64_t padding_mode = 0; // zeros
+    at::Tensor tmp_desc = at::grid_sampler(coarse_desc, sample_tensor, interpolation_mode, padding_mode, false);
+    tmp_desc = tmp_desc.reshape({D, -1});
+
+    at::Tensor desc_norm = torch::norm(tmp_desc, 2, 0).unsqueeze(0);// Frobenius norm on channel 0
+    tmp_desc = torch::div(tmp_desc, desc_norm);
+    desc = tensor2d_to_mat(tmp_desc).t();
+}
+
+void Superpoint::getKeyPoints(std::vector<cv::KeyPoint> &kps) {
+    at::Tensor dense = semi.exp();
+    dense = dense / (at::sum(dense,0) + .00001);
+
+    at::Tensor nodust = dense.slice(0,0,dense.size(0)-1);
+    nodust = nodust.transpose(0,2).transpose(0,1);
+
+    int Hc = int(H / cell);
+    int Wc = int(W / cell);
+
+    at::Tensor heatmap = nodust.reshape({Hc, Wc, cell, cell});
+    heatmap = heatmap.transpose(1,2);
+    heatmap = heatmap.reshape({Hc*cell, Wc*cell}); //HxW
+
+//    cout << coarse_desc.sizes() << " - " << heatmap.sizes() << "\n";// [1,256,30(8),47(8)]
+
+    at::Tensor pts = (heatmap >= thres).nonzero();
+    vector<at::Tensor> yx = pts.split(1,1);
+    pts.transpose(0,1);
+    at::Tensor z = heatmap.index({yx[0],yx[1]}).squeeze();
+
+    yx[0] = yx[0].squeeze().to(at::kInt);
+    yx[1] = yx[1].squeeze().to(at::kInt);
+
+    non_maximum_suppression(yx,z,kps, H, W, dist_thresh, border_remove);
+}
+
+void Superpoint::getDescriptor(const std::vector<cv::KeyPoint> &kps, cv::Mat &desc) {
+    const long num_pts = kps.size();
+    const long D = coarse_desc.size(1);
+
+    vector<float> sample_pts(kps.size()*2);
+    float W_2 = float(W)/2.f;
+    float H_2 = float(H)/2.f;
+    for (unsigned int i = 0; i < kps.size() ; i++) {
+        sample_pts[i*2] = float(kps[i].pt.x)/W_2 - 1.f;
+        sample_pts[i*2+1] = float(kps[i].pt.y)/H_2 - 1.f;
+    }
     at::Tensor sample_tensor = torch::from_blob(sample_pts.data(), {1, 1, num_pts, 2}, torch::TensorOptions().dtype(at::kFloat));
     int64_t interpolation_mode = 0; // Bilinear
     int64_t padding_mode = 0; // zeros

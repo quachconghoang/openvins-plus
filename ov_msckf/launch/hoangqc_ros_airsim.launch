@@ -4,7 +4,7 @@
     <arg name="max_cameras" default="2" />
     <arg name="use_stereo"  default="false" />
     <arg name="bag_start"   default="0" /> <!-- v1-2: 0, mh1: 40, mh2: 35, mh3: 17.5, mh4-5: 15 -->
-    <arg name="bag"         default="/home/hoangqc/Datasets/Airsim-ros/Blocks-00.bag" />
+    <arg name="bag"         default="/home/hoangqc/Datasets/Airsim-ros/NH-base-752x480.bag" />
 
     <!-- imu starting thresholds -->
     <arg name="init_window_time"  default="0.75" />
@@ -13,8 +13,8 @@
     <!-- saving trajectory path and timing information -->
     <arg name="dosave"      default="true" />
     <arg name="dotime"      default="true" />
-    <arg name="path_est"    default="/home/hoangqc/Datasets/Airsim-ros/traj_estimate.txt" />
-    <arg name="path_time"   default="/home/hoangqc/Datasets/Airsim-ros/traj_timing.txt" />
+    <arg name="path_est"    default="/home/hoangqc/stamped_traj_estimate.txt" />
+    <arg name="path_time"   default="/home/hoangqc/stamped_timing.txt" />
 
 
     <!-- MASTER NODE! -->
@@ -25,6 +25,7 @@
         <param name="topic_imu"      type="string" value="/imu0" />
         <param name="topic_camera0"  type="string" value="/cam0/image_raw" />
         <param name="topic_camera1"  type="string" value="/cam1/image_raw" />
+        <param name="path_gt"     type="string" value="/home/hoangqc/Datasets/Airsim-ros/gt/NH-base-752x480-vis.csv" />
         <rosparam param="stereo_pairs">[0, 1]</rosparam>
 
         <!-- world/filter parameters -->
@@ -88,18 +89,14 @@
         <param name="accelerometer_random_walk"    type="double"   value="1.25e-5" />
 
         <!-- camera intrinsics -->
-        <rosparam param="cam0_wh">[640, 400]</rosparam>
-        <rosparam param="cam1_wh">[640, 400]</rosparam>
+        <rosparam param="cam0_wh">[752, 480]</rosparam>
+        <rosparam param="cam1_wh">[752, 480]</rosparam>
         <param name="cam0_is_fisheye" type="bool" value="false" />
         <param name="cam1_is_fisheye" type="bool" value="false" />
-        <rosparam param="cam0_k">[320, 320, 320.0, 200.0]</rosparam>
+        <rosparam param="cam0_k">[376, 376, 376.0, 240.0]</rosparam>
         <rosparam param="cam0_d">[0.0, 0.0, 0.0, 0.0]</rosparam>
-        <rosparam param="cam1_k">[320, 320, 320.0, 200.0]</rosparam>
+        <rosparam param="cam1_k">[376, 376, 376.0, 240.0]</rosparam>
         <rosparam param="cam1_d">[0.0, 0.0, 0.0, 0.0]</rosparam>
-<!--        <rosparam param="cam0_k">[170.147, 170.147, 320.0, 200.0]</rosparam>-->
-<!--        <rosparam param="cam0_d">[0.0, 0.0, 0.0, 0.0]</rosparam>-->
-<!--        <rosparam param="cam1_k">[170.147, 170.147, 320.0, 200.0]</rosparam>-->
-<!--        <rosparam param="cam1_d">[0.0, 0.0, 0.0, 0.0]</rosparam>-->
 
         <!-- camera extrinsics -->
         <rosparam param="T_C0toI">

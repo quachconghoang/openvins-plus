@@ -35,8 +35,6 @@
 #include <opencv2/highgui/highgui.hpp>
 
 #include "cam/CamRadtan.h"
-#include "track/TrackAruco.h"
-#include "track/TrackDescriptor.h"
 #include "track/TrackKLT.h"
 #include "track/TrackTorch.h"
 
@@ -55,6 +53,8 @@ int clone_states = 10;
 std::deque<double> clonetimes;
 ros::Time time_start;
 
+bool need_exit = false;
+
 // Our master function for tracking
 void handle_stereo(double time0, double time1, cv::Mat img0, cv::Mat img1);
 
@@ -71,7 +71,10 @@ int main(int argc, char **argv) {
 
     // Location of the ROS bag we want to read in
     std::string path_to_bag;
+
+//    nh.param<std::string>("path_bag", path_to_bag, "/home/hoangqc/Datasets/Airsim-ros/NH-base-752x480.bag");
     nh.param<std::string>("path_bag", path_to_bag, "/home/hoangqc/Datasets/EuroC/MH_04_difficult.bag");
+//    nh.param<std::string>("path_bag", path_to_bag, "/home/hoangqc/Datasets/VIODE/city_day_0_none.bag");
 //    nh.param<std::string>("path_bag", path_to_bag, "/mnt/c/Users/hoangqc/Desktop/Datasets/VIODE/city_day_0_none.bag");
     printf("ros bag path is: %s\n", path_to_bag.c_str());
 
@@ -90,8 +93,8 @@ int main(int argc, char **argv) {
     nh.param<int>("num_aruco", num_aruco, 1024);
     nh.param<int>("clone_states", clone_states, 11);
     nh.param<int>("fast_threshold", fast_threshold, 10);
-    nh.param<int>("grid_x", grid_x, 9);
-    nh.param<int>("grid_y", grid_y, 7);
+    nh.param<int>("grid_x", grid_x, 8);
+    nh.param<int>("grid_y", grid_y, 8);
     nh.param<int>("min_px_dist", min_px_dist, 10);
     nh.param<double>("knn_ratio", knn_ratio, 0.70);
     nh.param<bool>("downsize_aruco", do_downsizing, false);
@@ -120,9 +123,7 @@ int main(int argc, char **argv) {
 
     // Lets make a feature extractor
 //   extractor = new TrackKLT(cameras, num_pts, num_aruco, !use_stereo, method, fast_threshold, grid_x, grid_y, min_px_dist);
-//     extractor = new TrackDescriptor(cameras, num_pts, num_aruco, !use_stereo, method, fast_threshold, grid_x, grid_y, min_px_dist, knn_ratio);
     extractor = new TrackTorch(cameras, num_pts, num_aruco, !use_stereo, method, fast_threshold, grid_x, grid_y, min_px_dist);
-//    extractor = new TrackAruco(cameras, num_aruco, !use_stereo, method, do_downsizing);
 
     //===================================================================================
     //===================================================================================
@@ -169,6 +170,8 @@ int main(int argc, char **argv) {
 
         // If ros is wants us to stop, break out
         if (!ros::ok())
+            break;
+        if (need_exit)
             break;
 
         // Handle LEFT camera
@@ -263,7 +266,8 @@ void handle_stereo(double time0, double time1, cv::Mat img0, cv::Mat img1) {
     // Show our image!
     cv::imshow("Active Tracks", img_active);
     cv::imshow("Track History", img_history);
-    cv::waitKey(1);
+    int _key = cv::waitKey(1);
+    if(_key == 27) need_exit = true;
 
     // Get lost tracks
     std::shared_ptr<FeatureDatabase> database = extractor->get_feature_database();
