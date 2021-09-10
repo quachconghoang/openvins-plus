@@ -20,7 +20,7 @@ namespace ov_core{
         : TrackBase(cameras, numfeats, numaruco, binocular, histmethod), threshold(fast_threshold), grid_x(gridx), grid_y(gridy),
         min_px_dist(minpxdist) {
             printf("TrackTorch INIT!!! \n");
-            cv::String modelPath = "/home/hoangqc/Datasets/Weights/superpoint.pt";
+            cv::String modelPath = "/home/hoangqc/workspace/Weights/superpoint.pt";
             printf("MODEL: %s \n", modelPath.c_str());
             engine.init(modelPath, false, true);
             torch::NoGradGuard no_grad;

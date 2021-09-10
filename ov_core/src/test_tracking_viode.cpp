@@ -73,9 +73,9 @@ int main(int argc, char **argv) {
     std::string path_to_bag;
 
 //    nh.param<std::string>("path_bag", path_to_bag, "/home/hoangqc/Datasets/Airsim-ros/NH-base-752x480.bag");
-    nh.param<std::string>("path_bag", path_to_bag, "/home/hoangqc/Datasets/EuroC/MH_04_difficult.bag");
+//    nh.param<std::string>("path_bag", path_to_bag, "/home/hoangqc/Datasets/EuroC/MH_04_difficult.bag");
 //    nh.param<std::string>("path_bag", path_to_bag, "/home/hoangqc/Datasets/VIODE/city_day_0_none.bag");
-//    nh.param<std::string>("path_bag", path_to_bag, "/mnt/c/Users/hoangqc/Desktop/Datasets/VIODE/city_day_0_none.bag");
+    nh.param<std::string>("path_bag", path_to_bag, "/mnt/c/Users/hoangqc/Datasets/EuroC/MH_04_difficult.bag");
     printf("ros bag path is: %s\n", path_to_bag.c_str());
 
     // Get our start location and how much of the bag we want to play
