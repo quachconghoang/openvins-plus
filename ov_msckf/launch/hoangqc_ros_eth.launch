@@ -3,8 +3,9 @@
     <!-- mono or stereo and what ros bag to play -->
     <arg name="max_cameras" default="2" />
     <arg name="use_stereo"  default="true" />
-    <arg name="bag_start"   default="0" /> <!-- v1-2: 0, mh1: 40, mh2: 35, mh3: 17.5, mh4-5: 15 -->
-    <arg name="bag"         default="/home/hoangqc/Datasets/EuroC/V1_02_medium.bag" />
+    <arg name="bag_start"   default="17.5" /> <!-- v1-2: 0, mh1: 40, mh2: 35, mh3: 17.5, mh4-5: 15 -->
+    <arg name="root_dir"   default="/mnt/c/Users/hoangqc/Desktop/Datasets" />
+    <arg name="bag"         default="$(arg root_dir)/EuroC/MH_03_medium.bag" />
 
     <!-- imu starting thresholds -->
     <arg name="init_window_time"  default="0.75" />
@@ -13,8 +14,8 @@
     <!-- saving trajectory path and timing information -->
     <arg name="dosave"      default="true" />
     <arg name="dotime"      default="true" />
-    <arg name="path_est"    default="/home/hoangqc/stamped_traj_estimate.txt" />
-    <arg name="path_time"   default="/home/hoangqc/stamped_traj_timing.txt" />
+    <arg name="path_est"    default="$(arg root_dir)/stamped_traj_estimate.txt" />
+    <arg name="path_time"   default="$(arg root_dir)/stamped_traj_timing.txt" />
 
 
     <!-- MASTER NODE! -->
@@ -25,7 +26,7 @@
         <param name="topic_imu"      type="string" value="/imu0" />
         <param name="topic_camera0"  type="string" value="/cam0/image_raw" />
         <param name="topic_camera1"  type="string" value="/cam1/image_raw" />
-        <param name="path_gt"     type="string" value="/home/hoangqc/Datasets/EuroC/gt/V1_02_medium.csv" />
+        <param name="path_gt"     type="string" value="$(arg root_dir)/EuroC/gt/MH_03_medium.csv" />
         <rosparam param="stereo_pairs">[0, 1]</rosparam>
 
         <!-- world/filter parameters -->

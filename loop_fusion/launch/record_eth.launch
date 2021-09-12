@@ -8,20 +8,23 @@
 
     <!-- what dataset we are using -->
     <arg name="max_cameras" default="1" />
-    <arg name="dataset"     default="V1_01_easy" /> <!-- V1_01_easy, V1_02_medium, V1_03_difficult -->
-    <arg name="bag"         default="/home/patrick/datasets/eth/$(arg dataset).bag" />
-
+    <!-- <arg name="dataset"     default="V1_01_easy" /> -->
+    <!-- <arg name="bag"         default="/home/patrick/datasets/eth/$(arg dataset).bag" /> -->
+    <arg name="root_dir"   default="/mnt/c/Users/hoangqc/Desktop/Datasets" />
+    <arg name="bag"         default="$(arg root_dir)/EuroC/MH_03_medium.bag" />
+    
     <!-- saving trajectory path -->
-    <arg name="path_est"    default="$(find loop_fusion)/../data/algorithms/$(arg mode_type)_open_vins/$(arg dataset)/$(arg run_number)_estimate.txt" />
-    <arg name="path_opt"    default="$(find loop_fusion)/../data/algorithms/$(arg mode_type)_pose_graph/$(arg dataset)/$(arg run_number)_estimate.txt" />
-
+    <!-- <arg name="path_est"    default="$(find loop_fusion)/../data/algorithms/$(arg mode_type)_open_vins/$(arg dataset)/$(arg run_number)_estimate.txt" /> -->
+    <!-- <arg name="path_opt"    default="$(find loop_fusion)/../data/algorithms/$(arg mode_type)_pose_graph/$(arg dataset)/$(arg run_number)_estimate.txt" /> -->
+    <arg name="path_est"    default="$(arg root_dir)/frontend_estimate.txt" />
+    <arg name="path_opt"    default="$(arg root_dir)/backend_estimate.txt" />
 
     <!-- ======================================================================= -->
     <!-- ======================================================================= -->
 
 
     <!-- VIO: include the other launch file -->
-    <include file="$(find ov_msckf)/launch/pgeneva_ros_eth.launch">
+    <include file="$(find ov_msckf)/launch/hoangqc_ros_eth.launch">
         <arg name="max_cameras" value="$(arg max_cameras)" />
         <arg name="bag"         value="$(arg bag)" />
     </include>

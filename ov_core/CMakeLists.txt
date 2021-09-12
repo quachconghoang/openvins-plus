@@ -15,8 +15,8 @@ endif()
 find_package(Boost REQUIRED COMPONENTS system filesystem thread date_time)
 
 # Display message to user
-message(WARNING "OPENCV VERSION: " ${OpenCV_VERSION})
-message(WARNING "BOOST VERSION: " ${Boost_VERSION})
+message(STATUS "OPENCV VERSION: " ${OpenCV_VERSION})
+message(STATUS "BOOST VERSION: " ${Boost_VERSION})
 
 # If we will compile with aruco support
 option(ENABLE_ARUCO_TAGS "Enable or disable aruco tag (disable if no contrib modules)" ON)
