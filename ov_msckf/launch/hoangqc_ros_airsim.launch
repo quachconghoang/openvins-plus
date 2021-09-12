@@ -2,7 +2,7 @@
 
     <!-- mono or stereo and what ros bag to play -->
     <arg name="max_cameras" default="2" />
-    <arg name="use_stereo"  default="false" />
+    <arg name="use_stereo"  default="true" />
     <arg name="bag_start"   default="0" /> <!-- v1-2: 0, mh1: 40, mh2: 35, mh3: 17.5, mh4-5: 15 -->
     <!-- <arg name="bag"         default="/home/hoangqc/Datasets/Airsim-ros/NH-base-752x480.bag" /> -->
     <arg name="root_dir"   default="/mnt/c/Users/hoangqc/Desktop/Datasets" />
@@ -16,7 +16,7 @@
     <arg name="dosave"      default="true" />
     <arg name="dotime"      default="true" />
     <arg name="path_est"    default="$(arg root_dir)/stamped_traj_estimate.txt" />
-    <!-- <arg name="path_time"   default="$(arg root_dir)/stamped_traj_timing.txt" /> -->
+    <arg name="path_time"   default="$(arg root_dir)/stamped_traj_timing.txt" />
 
 
     <!-- MASTER NODE! -->
