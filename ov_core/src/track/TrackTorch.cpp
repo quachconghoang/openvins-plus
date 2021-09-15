@@ -305,7 +305,7 @@ void TrackTorch::perform_detection_stereo(const std::vector<cv::Mat> &img0pyr, c
     // LEFT: if we need features we should extract them in the current frame
     // LEFT: we will also try to track them from this frame over to the right frame
     // LEFT: in the case that we have two features that are the same, then we should merge them
-    if (num_featsneeded_0 > std::min(75, (int)(0.2 * num_features))) {
+    if (num_featsneeded_0 > std::min(30, (int)(0.1 * num_features))) {
 
         // Extract our features (use fast with griding)
         std::vector<cv::KeyPoint> pts0_ext;

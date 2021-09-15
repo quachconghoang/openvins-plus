@@ -6,7 +6,7 @@
     <arg name="bag_start"   default="0" /> <!-- v1-2: 0, mh1: 40, mh2: 35, mh3: 17.5, mh4-5: 15 -->
     <!-- <arg name="bag"         default="/home/hoangqc/Datasets/Airsim-ros/NH-base-752x480.bag" /> -->
     <arg name="root_dir"   default="/mnt/c/Users/hoangqc/Desktop/Datasets" />
-    <arg name="bag"         default="$(arg root_dir)/Airsim-ros/NH-base-752x480.bag" />
+    <arg name="bag"         default="$(arg root_dir)/Airsim-ros/NH-loop2-752x480.bag" />
 
     <!-- imu starting thresholds -->
     <arg name="init_window_time"  default="0.75" />
@@ -15,8 +15,8 @@
     <!-- saving trajectory path and timing information -->
     <arg name="dosave"      default="true" />
     <arg name="dotime"      default="true" />
-    <arg name="path_est"    default="$(arg root_dir)/stamped_traj_estimate.txt" />
-    <arg name="path_time"   default="$(arg root_dir)/stamped_traj_timing.txt" />
+    <arg name="path_est"    default="$(arg root_dir)/Airsim-ros/stamped_traj_estimate.txt" />
+    <arg name="path_time"   default="$(arg root_dir)/Airsim-ros/stamped_traj_timing.txt" />
 
 
     <!-- MASTER NODE! -->
@@ -27,7 +27,7 @@
         <param name="topic_imu"      type="string" value="/imu0" />
         <param name="topic_camera0"  type="string" value="/cam0/image_raw" />
         <param name="topic_camera1"  type="string" value="/cam1/image_raw" />
-        <param name="path_gt"     type="string" value="$(arg root_dir)/Airsim-ros/gt/NH-base-752x480-vis.csv" />
+        <param name="path_gt"     type="string" value="$(arg root_dir)/Airsim-ros/gt/NH-loop2-752x480-vis.csv" />
         <rosparam param="stereo_pairs">[0, 1]</rosparam>
 
         <!-- world/filter parameters -->
@@ -53,10 +53,11 @@
         <param name="feat_rep_aruco"         type="string" value="ANCHORED_FULL_INVERSE_DEPTH" />
 
         <!-- zero velocity update parameters -->
-        <param name="try_zupt"               type="bool"   value="false" />
+        <param name="try_zupt"               type="bool"   value="true" />
         <param name="zupt_chi2_multipler"    type="int"    value="2" />
-        <param name="zupt_max_velocity"      type="double" value="0.3" />
+        <param name="zupt_max_velocity"      type="double" value="0.5" />
         <param name="zupt_noise_multiplier"  type="double" value="50" />
+        <param name="zupt_only_at_beginning" type="bool"   value="true" />
 
         <!-- timing statistics recording -->
         <param name="record_timing_information"   type="bool"   value="$(arg dotime)" />
@@ -64,14 +65,18 @@
 
         <!-- tracker/extractor properties -->
         <param name="use_klt"            type="bool"   value="true" />
-        <param name="num_pts"            type="int"    value="250" />
+        <param name="use_dnn"            type="bool"   value="true" />
+        <param name="num_pts"            type="int"    value="400" />
         <param name="fast_threshold"     type="int"    value="15" />
         <param name="grid_x"             type="int"    value="9" />
         <param name="grid_y"             type="int"    value="7" />
-        <param name="min_px_dist"        type="int"    value="5" />
+        <param name="min_px_dist"        type="int"    value="8" />
         <param name="knn_ratio"          type="double" value="0.65" />
         <param name="downsample_cameras" type="bool"   value="false" />
-        <param name="multi_threading"    type="bool"   value="true" />
+        <param name="multi_threading"    type="bool"   value="false" />
+        <param name="histogram_method"   type="string" value="HISTOGRAM" /> 
+        <!-- NONE, HISTOGRAM, CLAHE -->
+
 
         <!-- aruco tag/mapping properties -->
         <param name="use_aruco"        type="bool"   value="false" />

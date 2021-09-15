@@ -189,6 +189,8 @@ struct VioManagerOptions {
   /// If we should use KLT tracking, or descriptor matcher
   bool use_klt = true;
 
+  bool use_dnn = false;
+
   /// If should extract aruco tags and estimate them
   bool use_aruco = true;
 
@@ -237,6 +239,7 @@ struct VioManagerOptions {
   void print_trackers() {
     printf("FEATURE TRACKING PARAMETERS:\n");
     printf("\t- use_klt: %d\n", use_klt);
+    printf("\t- use_dnn: %d\n", use_dnn);
     printf("\t- use_stereo: %d\n", use_stereo);
     printf("\t- use_aruco: %d\n", use_aruco);
     printf("\t- downsize aruco: %d\n", downsize_aruco);

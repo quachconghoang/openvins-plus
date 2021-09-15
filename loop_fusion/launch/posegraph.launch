@@ -24,9 +24,16 @@
         <!-- OUTPUT: visualization topics -->
         <remap from="/loop_fusion_node/match_image"    to="/ov_secondary/match_image"/>
         <remap from="/loop_fusion_node/pose_rect"      to="/ov_secondary/poseimu"/>
-        <remap from="/loop_fusion_node/odometry_rect"  to="/ov_secondary/odomimu"/>
+        <remap from="/loop_fusion_node/odometry_rect"  to="/ov_secondary/odomimu"/>      
+    </node>
 
-
+    <arg name="root_dir"   default="/mnt/c/Users/hoangqc/Desktop/Datasets" />
+    <arg name="path_opt"    default="$(arg root_dir)/tmp/stamped_traj_estimate.txt" />
+            <!-- record loop closed pose -->
+    <node name="record_graph" pkg="ov_eval" type="pose_to_file" output="screen">
+        <param name="topic"      type="str" value="/ov_secondary/poseimu" />
+        <param name="topic_type" type="str" value="PoseWithCovarianceStamped" />
+        <param name="output"     type="str" value="$(arg path_opt)" />
     </node>
 
 

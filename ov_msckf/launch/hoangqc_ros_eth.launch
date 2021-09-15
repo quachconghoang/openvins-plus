@@ -3,9 +3,9 @@
     <!-- mono or stereo and what ros bag to play -->
     <arg name="max_cameras" default="2" />
     <arg name="use_stereo"  default="true" />
-    <arg name="bag_start"   default="17.5" /> <!-- v1-2: 0, mh1: 40, mh2: 35, mh3: 17.5, mh4-5: 15 -->
+    <arg name="bag_start"   default="15" /> <!-- v1-2: 0, mh1: 40, mh2: 35, mh3: 17.5, mh4-5: 15 -->
     <arg name="root_dir"   default="/mnt/c/Users/hoangqc/Desktop/Datasets" />
-    <arg name="bag"         default="$(arg root_dir)/EuroC/MH_03_medium.bag" />
+    <arg name="bag"         default="$(arg root_dir)/EuroC/MH_05_difficult.bag" />
 
     <!-- imu starting thresholds -->
     <arg name="init_window_time"  default="0.75" />
@@ -14,8 +14,8 @@
     <!-- saving trajectory path and timing information -->
     <arg name="dosave"      default="true" />
     <arg name="dotime"      default="true" />
-    <arg name="path_est"    default="$(arg root_dir)/stamped_traj_estimate.txt" />
-    <arg name="path_time"   default="$(arg root_dir)/stamped_traj_timing.txt" />
+    <arg name="path_est"    default="$(arg root_dir)/EuroC/stamped_traj_estimate.txt" />
+    <arg name="path_time"   default="$(arg root_dir)/EuroC/stamped_traj_timing.txt" />
 
 
     <!-- MASTER NODE! -->
@@ -26,7 +26,7 @@
         <param name="topic_imu"      type="string" value="/imu0" />
         <param name="topic_camera0"  type="string" value="/cam0/image_raw" />
         <param name="topic_camera1"  type="string" value="/cam1/image_raw" />
-        <param name="path_gt"     type="string" value="$(arg root_dir)/EuroC/gt/MH_03_medium.csv" />
+        <param name="path_gt"     type="string" value="$(arg root_dir)/EuroC/gt/MH_05_difficult.csv" />
         <rosparam param="stereo_pairs">[0, 1]</rosparam>
 
         <!-- world/filter parameters -->
@@ -63,6 +63,7 @@
 
         <!-- tracker/extractor properties -->
         <param name="use_klt"            type="bool"   value="true" />
+        <param name="use_dnn"            type="bool"   value="false" />
         <param name="num_pts"            type="int"    value="250" />
         <param name="fast_threshold"     type="int"    value="15" />
         <param name="grid_x"             type="int"    value="5" />
