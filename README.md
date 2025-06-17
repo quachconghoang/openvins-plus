@@ -1,6 +1,8 @@
 # openvins-plus
 Open_VINS with my outlook
 
+It can work with TartanAir dataset but need some processing steps. Inbox me if you wanna need some help.
+
 # Reference
 
 ```bibtex
